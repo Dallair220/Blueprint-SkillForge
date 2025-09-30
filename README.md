@@ -51,8 +51,8 @@ The goal: explore modern technologies together, practice cloud & DevOps, dive in
 
 ## 🤝 Contributors
 
+- Dennis 
 - Paul  
-- Dennis  
 
 ---
 
