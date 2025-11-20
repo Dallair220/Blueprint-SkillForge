@@ -9,10 +9,10 @@ The goal: explore modern technologies together, practice cloud & DevOps, dive in
 
 - **Frontend:** React, TypeScript, ShadCN (UI components)  
 - **Backend:** Kotlin, Spring Boot  
-- **Database:** PostgreSQL, Redis (optional)  
+- **Database:** PostgreSQL
 - **Infrastructure:** AWS (RDS, S3, etc.), Docker  
 - **CI/CD:** GitHub Actions  
-- **Auth:** OAuth2 + JWT  
+- **Auth:** OAuth2 / JWT  
 - **Extras:** AI integration (OpenAI API, etc.)  
 
 ---
