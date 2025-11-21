@@ -1,0 +1,43 @@
+name: Enforce Release PRs on Main
+
+on:
+  pull_request:
+    types: [opened, reopened, edited, synchronize]
+    branches:
+      - main
+
+jobs:
+  enforce-release-rule:
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write # Required to close PRs and comment
+    
+    steps:
+      - name: Check PR Title
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const pr = context.payload.pull_request;
+            const title = pr.title.toLowerCase();
+            
+            // Check if the title contains "release"
+            if (!title.includes('release')) {
+              
+              // 1. Add a comment explaining why
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: pr.number,
+                body: "🛑 **PR Automatically Closed**\n\nTo maintain repository stability, direct Pull Requests to `main` are strictly reserved for releases.\n\n**Please follow these steps:**\n1. If this is a feature or fix, please change the target branch to `develop`.\n2. If this IS a release, please rename your PR title to include the word 'release' and reopen it."
+              });
+
+              // 2. Close the Pull Request
+              await github.rest.pulls.update({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                pull_number: pr.number,
+                state: 'closed'
+              });
+              
+              core.setFailed('PR closed because it does not target develop and is not a release.');
+            }
