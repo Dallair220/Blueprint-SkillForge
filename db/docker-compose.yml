@@ -3,7 +3,7 @@
 services:
 
   db:
-    image: postgres
+    image: postgres:17-alpine
     restart: always
     # set shared memory limit when using docker compose
     shm_size: 128mb
@@ -18,9 +18,24 @@ services:
       POSTGRES_USER: postgres
     ports:
       - 5432:5432
+    # Use a named volume to ensure data persists across container restarts
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    # Health check ensures that Spring Boot doesn't try to connect
+    # before Postgres is fully initialized (though this is more critical
+    # if the Spring app was also running in Docker).
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   adminer:
     image: adminer
     restart: always
     ports:
       - 8080:8080
+
+volumes:
+  postgres_data:
+    driver: local
